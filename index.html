@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝗣𝗔𝗬𝗠𝗘𝗡𝗧 𝗞𝗬𝗬𝗪𝗘</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease;
+        }
+
+        .welcome-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .profile-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(106, 17, 203, 0.8);
+            margin-bottom: 30px;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(229, 46, 113, 0.5);
+        }
+
+        .welcome-text p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .enter-btn {
+            padding: 12px 40px;
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(229, 46, 113, 0.4);
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(229, 46, 113, 0.6);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: none;
+            padding-top: 50px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 114, 255, 0.5);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .payment-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+        }
+
+        .payment-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .payment-card.dana::before {
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+        }
+
+        .payment-card.gopay::before {
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+        }
+
+        .payment-card.qris::before {
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+        }
+
+        .payment-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .payment-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .payment-info {
+            margin-bottom: 20px;
+        }
+
+        .payment-info p {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .payment-number {
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .qris-img {
+            width: 100%;
+            max-width: 250px;
+            margin: 20px auto;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer p {
+            opacity: 0.7;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(106, 17, 203, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(106, 17, 203, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(106, 17, 203, 0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        /* Floating Elements */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            animation-duration: 20s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 60%;
+            left: 80%;
+            width: 60px;
+            height: 60px;
+            animation-duration: 25s;
+        }
+
+        .floating-element:nth-child(3) {
+            top: 80%;
+            left: 20%;
+            width: 40px;
+            height: 40px;
+            animation-duration: 15s;
+        }
+
+        .floating-element:nth-child(4) {
+            top: 30%;
+            left: 70%;
+            width: 70px;
+            height: 70px;
+            animation-duration: 30s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(50px, 50px) rotate(90deg);
+            }
+            50% {
+                transform: translate(0, 100px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-50px, 50px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-text h1 {
+                font-size: 2.5rem;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .payment-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="profile-img">
+            <img src="https://files.catbox.moe/utqz8b.jpg" alt="Profile Picture">
+        </div>
+        <div class="𝗦𝗘𝗟𝗔𝗠𝗔𝗧 𝗗𝗔𝗧𝗔𝗡𝗚 𝗗𝗜 𝗔𝗟𝗟 𝗣𝗔𝗬𝗠𝗘𝗡𝗧 𝗞𝗬𝗬𝗪𝗘">
+            <h1>WELCOME</h1>
+            <p>Selamat datang di halaman pembayaran kami</p>
+        </div>
+        <button class="enter-btn" id="enterBtn">MASUK</button>
+        
+        <!-- Background Music -->
+        <audio id="welcomeMusic" loop>
+            <source src="https://files.catbox.moe/xnzfup.mp3" type="audio/mpeg">
+            Browser Anda tidak mendukung elemen audio.
+        </audio>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <div class="header fade-in">
+                <h1>Pembayaran</h1>
+                <p>Silakan pilih metode pembayaran yang tersedia di bawah ini</p>
+            </div>
+
+            <div class="payment-options">
+                <!-- Dana Payment -->
+                <div class="payment-card dana fade-in">
+                    <div class="payment-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h2>DANA</h2>
+                    <div class="payment-info">
+                        <p>Nomor: <span class="payment-number">087874744351</span> <button class="copy-btn" data-number="087874744351"><i class="fas fa-copy"></i></button></p>
+                        <p>Atas Nama: INA WAHYUNI</p>
+                    </div>
+                </div>
+
+                <!-- GoPay Payment -->
+                <div class="payment-card gopay fade-in">
+                    <div class="payment-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h2>GOPAY</h2>
+                    <div class="payment-info">
+                        <p>Nomor: <span class="payment-number">081574757113</span> <button class="copy-btn" data-number="081574757113"><i class="fas fa-copy"></i></button></p>
+                        <p>Atas Nama: FAHRI</p>
+                    </div>
+                </div>
+
+                <!-- QRIS Payment -->
+                <div class="payment-card qris fade-in">
+                    <div class="payment-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h2>QRIS</h2>
+                    <div class="payment-info">
+                        <p>Scan QR Code di bawah ini:</p>
+                        <img src="https://files.catbox.moe/l82nhi.jpg" alt="QRIS Code" class="qris-img">
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer fade-in">
+                <p>Terima kasih telah melakukan pembayaran</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const mainContent = document.getElementById('mainContent');
+        const enterBtn = document.getElementById('enterBtn');
+        const welcomeMusic = document.getElementById('welcomeMusic');
+        const copyButtons = document.querySelectorAll('.copy-btn');
+
+        // Enter Button Event
+        enterBtn.addEventListener('click', function() {
+            // Play music
+            welcomeMusic.play();
+            
+            // Fade out welcome screen
+            welcomeScreen.classList.add('fade-out');
+            
+            // Show main content after delay
+            setTimeout(function() {
+                welcomeScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Add fade-in animation to elements
+                const fadeElements = document.querySelectorAll('.fade-in');
+                fadeElements.forEach((element, index) => {
+                    setTimeout(() => {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }, index * 200);
+                });
+            }, 1000);
+        });
+
+        // Copy Button Functionality
+        copyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const number = this.getAttribute('data-number');
+                
+                // Copy to clipboard
+                navigator.clipboard.writeText(number).then(() => {
+                    // Change button text temporarily
+                    const originalHTML = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i>';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalHTML;
+                    }, 2000);
+                });
+            });
+        });
+
+        // Auto-play music on page load (with user interaction)
+        document.addEventListener('click', function() {
+            if (welcomeMusic.paused) {
+                welcomeMusic.play().catch(e => console.log("Autoplay prevented:", e));
+            }
+        }, { once: true });
+    </script>
+</body>
+</html>
